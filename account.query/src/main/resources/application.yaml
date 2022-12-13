@@ -8,7 +8,7 @@ spring:
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:mysql://localhost:3306/bankAccount?createDatabaseIfNotExist=true
+    url: jdbc:mysql://mysql:3306/bankAccount?createDatabaseIfNotExist=true
     username: root
     password: techbankpwd
   sql:
@@ -19,7 +19,7 @@ spring:
     listener:
       ack-mode: MANUAL_IMMEDIATE
     consumer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: kafka:9092
       group-id: bankAccountConsumer
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -29,3 +29,7 @@ spring:
           json:
             trusted:
               packages: '*'
+
+  devtools:
+    livereload:
+      port: 35730

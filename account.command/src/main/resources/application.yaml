@@ -5,12 +5,16 @@ server:
 spring:
   data:
     mongodb:
-      host: localhost
+      host: mongodb
       port: 27017
       database: write-db
 
   kafka:
     producer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: kafka:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  devtools:
+    livereload:
+      port: 35729

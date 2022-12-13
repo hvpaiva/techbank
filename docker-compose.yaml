@@ -1,6 +1,46 @@
 version: "3.4"
 
 services:
+  account-command:
+    container_name: account-command
+    build:
+      context: ./account.command
+      dockerfile: Dockerfile
+    volumes:
+      - ./account.command:/app
+      - ./account.command/.m2:/root/.m2
+    working_dir: /app
+    command: sh run.sh
+    ports:
+      - "8081:8081"
+      - "35729:35729"
+      - "5005:5005"
+    depends_on:
+      - mongodb
+      - kafka
+    networks:
+      - techbank
+
+  account-query:
+    container_name: account-query
+    build:
+      context: ./account.query
+      dockerfile: Dockerfile
+    volumes:
+      - ./account.query:/app
+      - ./account.query/.m2:/root/.m2
+    working_dir: /app
+    command: sh run.sh
+    ports:
+      - "8082:8082"
+      - "35730:35730"
+      - "5006:5006"
+    depends_on:
+      - mongodb
+      - kafka
+    networks:
+      - techbank
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.0
     hostname: zookeeper
