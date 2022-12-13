@@ -3,12 +3,14 @@ package hvpaiva.account.command.api.commands;
 import hvpaiva.account.shared.dtos.AccountType;
 import hvpaiva.cqrs.core.commands.BaseCommand;
 
+import java.math.BigDecimal;
+
 public class OpenAccountCommand extends BaseCommand {
     private final String accountHolder;
     private final AccountType accountType;
-    private final double initialBalance;
+    private final BigDecimal initialBalance;
 
-    public OpenAccountCommand(String id, String accountHolder, AccountType accountType, double initialBalance) {
+    public OpenAccountCommand(String id, String accountHolder, AccountType accountType, BigDecimal initialBalance) {
         super(id);
         this.accountHolder = accountHolder;
         this.accountType = accountType;
@@ -23,7 +25,7 @@ public class OpenAccountCommand extends BaseCommand {
         return accountType;
     }
 
-    public double initialBalance() {
+    public BigDecimal initialBalance() {
         return initialBalance;
     }
 }

@@ -2,17 +2,17 @@ package hvpaiva.account.shared.events;
 
 import hvpaiva.cqrs.core.events.BaseEvent;
 
-import java.time.Instant;
+import java.math.BigDecimal;
 
 public class FundsDepositedEvent extends BaseEvent {
-    private final double amount;
+    private final BigDecimal amount;
 
-    public FundsDepositedEvent(String id, int version, Instant occurredOn, double amount) {
-        super(id, version, occurredOn);
+    public FundsDepositedEvent(String id, int version, BigDecimal amount) {
+        super(id, version);
         this.amount = amount;
     }
 
-    public double amount() {
+    public BigDecimal amount() {
         return amount;
     }
 }

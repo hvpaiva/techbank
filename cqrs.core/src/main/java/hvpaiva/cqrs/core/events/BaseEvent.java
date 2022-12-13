@@ -8,10 +8,10 @@ public abstract class BaseEvent extends Message {
     private final int version;
     private final Instant occurredOn;
 
-    protected BaseEvent(String id, int version, Instant occurredOn) {
+    protected BaseEvent(String id, int version) {
         super(id);
         this.version = version;
-        this.occurredOn = occurredOn;
+        this.occurredOn = Instant.now();
     }
 
     public int version() {

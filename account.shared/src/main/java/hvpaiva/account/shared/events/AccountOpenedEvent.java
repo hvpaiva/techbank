@@ -3,6 +3,7 @@ package hvpaiva.account.shared.events;
 import hvpaiva.account.shared.dtos.AccountType;
 import hvpaiva.cqrs.core.events.BaseEvent;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -10,18 +11,17 @@ public class AccountOpenedEvent extends BaseEvent {
     private final String accountHolder;
     private final AccountType accountType;
     private final LocalDateTime openedAt;
-    private final double initialBalance;
+    private final BigDecimal initialBalance;
 
     public AccountOpenedEvent(
             String id,
             int version,
-            Instant occurredOn,
             String accountHolder,
             AccountType accountType,
             LocalDateTime openedAt,
-            double initialBalance
+            BigDecimal initialBalance
     ) {
-        super(id, version, occurredOn);
+        super(id, version);
         this.accountHolder = accountHolder;
         this.accountType = accountType;
         this.openedAt = openedAt;
@@ -40,7 +40,7 @@ public class AccountOpenedEvent extends BaseEvent {
         return openedAt;
     }
 
-    public double initialBalance() {
+    public BigDecimal initialBalance() {
         return initialBalance;
     }
 }
