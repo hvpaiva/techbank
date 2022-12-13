@@ -1,0 +1,94 @@
+version: "3.4"
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_ALLOW_ANONYMOUS_LOGIN: "yes"
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+
+  kafka:
+    platform: linux/arm64
+    image: confluentinc/cp-kafka:7.3.0
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9094:9094"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_LISTENERS: INTERNAL://:9092,OUTSIDE://:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://broker:9092,OUTSIDE://host.docker.internal:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+
+  control-center:
+    platform: linux/arm64
+    image: confluentinc/cp-enterprise-control-center:7.3.0
+    container_name: control-center
+    hostname: control-center
+    depends_on:
+      - kafka
+    ports:
+      - "9021:9021"
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'broker:9092'
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_CONNECT_CLUSTER: http://app-connect:8083
+      PORT: 9021
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+
+  mongodb:
+    platform: linux/arm64/v8
+    container_name: write-db
+    image: mongo:4.2.3
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - "write_db_data:/data/db"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=example
+      - MONGO_INITDB_DATABASE=write-db
+    networks:
+      - techbank
+
+  mysql:
+    platform: linux/arm64/v8
+    container_name: read-db
+    image: mysql:latest
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - "read_db_data:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=techbankpwd
+      - MYSQL_DATABASE=read-db
+    networks:
+      - techbank
+
+volumes:
+  write_db_data:
+    driver: local
+  read_db_data:
+    driver: local
+
+networks:
+  techbank:
+    driver: bridge
+    attachable: true
